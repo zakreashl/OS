@@ -7,7 +7,7 @@ load_kernel:
     xor bx, bx          ; BX = 0, so ES:BX = 0x10000
 
     mov ah, 0x02
-    mov al, 10          ; 10 sectors for the kernel
+    mov al, 127         ; 127 sectors for the kernel
     mov ch, 0
     mov cl, 7           ; kernel starts at sector 7
     mov dh, 0
