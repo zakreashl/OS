@@ -72,6 +72,14 @@ void H_page_fault() {
     asm("cli; hlt");
 }
 
+void H_exception() {
+    add_error("Unhandled exception");
+    asm("cli; hlt");
+}
+
+void H_timer() {
+    outb(0x20, 0x20);
+}
 
 void H_keyboard() {
     unsigned char scancode = inb(0x60);  // read the key

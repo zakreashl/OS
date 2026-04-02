@@ -5,6 +5,14 @@
 [extern H_keyboard]
 H_keyboard_stub:
     pusha
-    call H_keyboard    ; your C function, no iret in it
+    call H_keyboard
+    popa
+    iret
+
+[global H_timer_stub]
+[extern H_timer]
+H_timer_stub:
+    pusha
+    call H_timer
     popa
     iret

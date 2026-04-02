@@ -34,6 +34,11 @@ void H_double_fault();
 void H_protection_fault();
 void H_page_fault();
 
+void H_exception();
+
+void H_timer();
+extern void H_timer_stub();
+
 void H_keyboard();
 extern void H_keyboard_stub();
 
