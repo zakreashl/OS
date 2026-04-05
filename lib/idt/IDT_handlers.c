@@ -1,6 +1,7 @@
 #include "../stdlib/stdlib.h"
 #include "IDT_handlers.h"
 #include "../screen/screen_services.h"
+#include "../io/io.h"
 
 idt_entry idts[IDT_ENTRIES];
 idt_ptr idtr;
@@ -12,37 +13,6 @@ char scancode_to_ascii[] = {
     0, '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, 0, 0, ' '
 };
 
-void outb(unsigned short port, unsigned char value) {
-    asm("outb %1, %0" : : "dN"(port), "a"(value));
-}
-
-void remap_pic() {
-    // Initialize both PICs
-    outb(0x20, 0x11);  // master
-    outb(0xA0, 0x11);  // slave
-
-    // Set vector offsets
-    outb(0x21, 0x20);  // master IRQs start at 32
-    outb(0xA1, 0x28);  // slave IRQs start at 40
-
-    // Tell PICs how they're wired together
-    outb(0x21, 0x04);
-    outb(0xA1, 0x02);
-
-    // Set x86 mode
-    outb(0x21, 0x01);
-    outb(0xA1, 0x01);
-
-    // Unmask only IRQ1 (keyboard), mask everything else
-    outb(0x21, 0xFD);
-    outb(0xA1, 0xFF);
-}
-
-unsigned char inb(unsigned short port) {
-    unsigned char value;
-    asm("inb %1, %0" : "=a"(value) : "dN"(port));
-    return value;
-}
 
 void idt_set_gate(uint8_t index, int offset) {
     idts[index].offset_high = (short) (offset >> 16);
@@ -88,5 +58,4 @@ void H_keyboard() {
     print(1,3, (const char*)ascii_char, VGA_COLOR_SUCCESS);
 
     outb(0x20, 0x20);  // EOI — tell master PIC we're done
-    asm("sti");
 }

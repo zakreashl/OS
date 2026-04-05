@@ -23,18 +23,19 @@ extern idt_ptr idtr;
 
 extern char scancode_to_ascii[];
 
-void outb(unsigned short port, unsigned char value);
-void remap_pic();
-
-unsigned char inb(unsigned short port);
 void idt_set_gate(uint8_t index, int offset);
 
 void H_divide_by_zero();
+extern void H_divide_by_zero_stub();
 void H_double_fault();
+extern void H_double_fault_stub();
 void H_protection_fault();
+extern void H_protection_fault_stub();
 void H_page_fault();
+extern void H_page_fault_stub();
 
 void H_exception();
+extern void H_exception_stub();
 
 void H_timer();
 extern void H_timer_stub();

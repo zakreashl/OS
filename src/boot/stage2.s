@@ -57,6 +57,29 @@ gdt_descriptor:
 load_gdt:
     cli
     lgdt [gdt_descriptor]
+    call get_memory_map
+    jmp load_PM
+
+get_memory_map:
+    mov di, 0x500           ; where to store entries
+    xor ebx, ebx            ; ebx = 0 to start
+    xor bp, bp              ; entry count = 0
+
+.loop:
+    mov eax, 0xE820
+    mov edx, 0x534D4150     ; "SMAP" magic number the BIOS expects
+    mov ecx, 24             ; 24 bytes per entry
+    int 0x15
+
+    jc .done                ; carry flag set = no more entries
+    inc bp
+    add di, 24
+    test ebx, ebx           ; ebx = 0 means last entry
+    jnz .loop
+
+.done:
+    mov [0x4FC], bp         ; store count just before the map
+    ret
 
 load_PM:
     mov eax, cr0
