@@ -34,7 +34,6 @@ void kernel_main() {
     pmm_mark_used(0, 0x100000); // Mark first 1MB used, BIOS, bootloader and kernel
 
     clear_screen();
-    int x = 5/0;
     print(0, 0, "Hello World", VGA_WHITE);
     while(1);
 }
