@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "QEMU Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/bin/kernel.elf",
+            "miDebuggerServerAddress": "localhost:1234",
+            "miDebuggerPath": "/opt/homebrew/bin/i386-elf-gdb",
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

@@ -3,7 +3,7 @@
 #include "../screen/screen_services.h"
 #include "../io/io.h"
 
-idt_entry idts[IDT_ENTRIES];
+idt_entry idts[IDT_ENTRIES] __attribute__((aligned(16)));
 idt_ptr idtr;
 
 char scancode_to_ascii[] = {
@@ -14,12 +14,12 @@ char scancode_to_ascii[] = {
 };
 
 
-void idt_set_gate(uint8_t index, int offset) {
-    idts[index].offset_high = (short) (offset >> 16);
-    idts[index].offset_low =  (short) (offset & 0xFFFF);
-
-    idts[index].flags = 0x8E;
-    idts[index].selector = CS;
+void idt_set_gate(uint8_t index, uint32_t offset) {
+    idts[index].offset_low  = (uint16_t)(offset & 0xFFFF);
+    idts[index].selector    = CS;
+    idts[index].zero        = 0;
+    idts[index].flags       = 0x8E;
+    idts[index].offset_high = (uint16_t)(offset >> 16);
 }
 
 void H_divide_by_zero() {
@@ -44,6 +44,11 @@ void H_page_fault() {
 
 void H_exception() {
     add_error("Unhandled exception");
+    asm("cli; hlt");
+}
+
+void H_no_error_code() {
+    add_error("Unhandled exception NEC");
     asm("cli; hlt");
 }
 

@@ -1,24 +1,28 @@
 #include "pic.h"
 #include "io.h"
+#include "../screen/screen_services.h"
+
+void io_wait() {
+    outb(0x80, 0x00);  // port 0x80 is unused, write is just a delay
+}
 
 void remap_pic() {
-    // Initialize both PICs
-    outb(0x20, 0x11);  // master
-    outb(0xA0, 0x11);  // slave
+    print(0,3,"1", VGA_COLOR_SUCCESS);
+    outb(0x20, 0x11); io_wait();
+    print(2,3,"2", VGA_COLOR_SUCCESS);
+    outb(0xA0, 0x11); io_wait();
 
-    // Set vector offsets
-    outb(0x21, 0x20);  // master IRQs start at 32
-    outb(0xA1, 0x28);  // slave IRQs start at 40
+    print(4,3,"3", VGA_COLOR_SUCCESS);
+    outb(0x21, 0x20); io_wait();
+    print(6,3,"4", VGA_COLOR_SUCCESS);
+    outb(0xA1, 0x28); io_wait();
 
-    // Tell PICs how they're wired together
-    outb(0x21, 0x04);
-    outb(0xA1, 0x02);
+    outb(0x21, 0x04); io_wait();
+    outb(0xA1, 0x02); io_wait();
 
-    // Set x86 mode
-    outb(0x21, 0x01);
-    outb(0xA1, 0x01);
+    outb(0x21, 0x01); io_wait();
+    outb(0xA1, 0x01); io_wait();
 
-    // Unmask IRQ0 (timer) and IRQ1 (keyboard), mask everything else
     outb(0x21, 0xFC);
     outb(0xA1, 0xFF);
 }

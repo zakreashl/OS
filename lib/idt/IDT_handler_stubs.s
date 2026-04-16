@@ -38,8 +38,17 @@ H_page_fault_stub:
 [global H_exception_stub]
 [extern H_exception]
 H_exception_stub:
+    add esp, 4
     pusha
     call H_exception
+    popa
+    iret
+
+[global H_no_error_code_stub]
+[extern H_no_error_code]
+H_no_error_code_stub:
+    pusha
+    call H_no_error_code
     popa
     iret
 
@@ -55,6 +64,11 @@ H_keyboard_stub:
 [extern H_timer]
 H_timer_stub:
     pusha
+    mov ax, 0x10   ; Load your Kernel Data Segment selector
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
     call H_timer
     popa
     iret
