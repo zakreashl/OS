@@ -7,9 +7,9 @@ load_kernel:
     xor bx, bx          ; BX = 0, so ES:BX = 0x10000
 
     mov ah, 0x02
-    mov al, 127         ; 127 sectors for the kernel
+    mov al, 8           ; 8 sectors for the kernel
     mov ch, 0
-    mov cl, 7           ; kernel starts at sector 7
+    mov cl, 3           ; kernel starts at sector 3
     mov dh, 0
     mov dl, 0x80
     int 0x13
@@ -61,6 +61,9 @@ load_gdt:
     jmp load_PM
 
 get_memory_map:
+    xor ax, ax
+    mov es, ax          ; ES:DI = 0x0000:0x0500 = physical 0x500
+    
     mov di, 0x500           ; where to store entries
     xor ebx, ebx            ; ebx = 0 to start
     xor bp, bp              ; entry count = 0
@@ -100,4 +103,4 @@ pm_entry:
 
     jmp 0x10000         ; jump to kernel
 
-times (5 * 512) - ($ - $$) db 0
+times 512 - ($ - $$) db 0

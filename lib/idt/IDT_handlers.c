@@ -24,32 +24,50 @@ void idt_set_gate(uint8_t index, uint32_t offset) {
 
 void H_divide_by_zero() {
     add_error("Divide by zero error");
-    asm("cli; hlt");
+        
+    while(1) {
+        __asm__ volatile ("cli; hlt");
+    }
 }
 
 void H_double_fault() {
     add_error("Double fault");
-    asm("cli; hlt");
+        
+    while(1) {
+        __asm__ volatile ("cli; hlt");
+    }
 }
 
 void H_protection_fault() {
     add_error("Protection fault");
-    asm("cli; hlt");
+
+    while(1) {
+        __asm__ volatile ("cli; hlt");
+    }
 }
 
 void H_page_fault() {
     add_error("Page fault");
-    asm("cli; hlt");
+        
+    while(1) {
+        __asm__ volatile ("cli; hlt");
+    }
 }
 
 void H_exception() {
     add_error("Unhandled exception");
-    asm("cli; hlt");
+        
+    while(1) {
+        __asm__ volatile ("cli; hlt");
+    }
 }
 
-void H_no_error_code() {
+void H_no_error_code(int regs) {
     add_error("Unhandled exception NEC");
-    asm("cli; hlt");
+        
+    while(1) {
+        __asm__ volatile ("cli; hlt");
+    }
 }
 
 void H_timer() {

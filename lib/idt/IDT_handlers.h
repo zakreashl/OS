@@ -36,8 +36,8 @@ extern void H_page_fault_stub();
 
 void H_exception();
 extern void H_exception_stub();
-void H_no_error_code();
-extern void H_no_error_code();
+void H_no_error_code(int regs);
+extern void H_no_error_code_stub(int regs);
 
 void H_timer();
 extern void H_timer_stub();

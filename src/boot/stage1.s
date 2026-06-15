@@ -13,7 +13,7 @@ start:
 
     ; load stage 2
     mov ah, 0x02      ; function: read sectors
-    mov al, 5         ; number of sectors to read
+    mov al, 1         ; number of sectors to read
     mov ch, 0         ; cylinder 0
     mov cl, 2         ; start at sector 2 (1-indexed, sector 1 is the MBR)
     mov dh, 0         ; head 0

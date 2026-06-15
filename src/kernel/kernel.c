@@ -8,24 +8,24 @@
 
 void set_IDT_table() {
     for(int i = 0; i < IDT_ENTRIES; i++) {
-        idt_set_gate(i,  (uint32_t) H_no_error_code);  
+        idt_set_gate(i,  (uint32_t) H_no_error_code_stub);
     }
 
     idt_set_gate(0,   (uint32_t) H_divide_by_zero_stub);
     idt_set_gate(8,   (uint32_t) H_double_fault_stub);
-    idt_set_gate(10,  (uint32_t) H_no_error_code);
-    idt_set_gate(11,  (uint32_t) H_no_error_code);
-    idt_set_gate(12,  (uint32_t) H_no_error_code);
+    idt_set_gate(10,  (uint32_t) H_no_error_code_stub);
+    idt_set_gate(11,  (uint32_t) H_no_error_code_stub);
+    idt_set_gate(12,  (uint32_t) H_no_error_code_stub);
     idt_set_gate(13,  (uint32_t) H_protection_fault_stub);
     idt_set_gate(14,  (uint32_t) H_page_fault_stub);
 
-    idt_set_gate(32, (uint32_t) H_timer_stub);
-    idt_set_gate(33, (uint32_t) H_keyboard_stub);
+    idt_set_gate(32,  (uint32_t) H_timer_stub);
+    idt_set_gate(33,  (uint32_t) H_keyboard_stub);
 
     idtr.base =  (uint32_t)&idts;
     idtr.limit = sizeof(idt_entry) * IDT_ENTRIES - 1;
 
-    //__asm__ volatile("lidt (%0)" : : "r" (&idtr));
+    __asm__ volatile("lidt (%0)" : : "r" (&idtr));
 }
 
 void kernel_main() {
