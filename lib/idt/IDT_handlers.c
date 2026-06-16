@@ -22,6 +22,19 @@ void idt_set_gate(uint8_t index, uint32_t offset) {
     idts[index].offset_high = (uint16_t)(offset >> 16);
 }
 
+void fault_handler(registers_t* regs) {
+    print("EXCEPTION", VGA_COLOR_ERROR);
+
+    // Later replace these with your actual int/hex print funcs
+    // print_hex(0, 1, regs->int_no, VGA_COLOR_ERROR);
+    // print_hex(0, 2, regs->err_code, VGA_COLOR_ERROR);
+    // print_hex(0, 3, regs->eip, VGA_COLOR_ERROR);
+
+    while (1) {
+        __asm__ volatile("cli; hlt");
+    }
+}
+
 void H_divide_by_zero() {
     add_error("Divide by zero error");
         
@@ -75,10 +88,22 @@ void H_timer() {
 }
 
 void H_keyboard() {
-    unsigned char scancode = inb(0x60);  // read the key
-    char ascii_char[] = {scancode_to_ascii[scancode], '\0'};
+    uint8_t scancode = inb(0x60);  // read the key
 
-    print(1,3, (const char*)ascii_char, VGA_COLOR_SUCCESS);
+    if(!(scancode & 0x80)) { // Key release
+        char ascii_char = scancode_to_ascii[scancode];
 
-    outb(0x20, 0x20);  // EOI — tell master PIC we're done
+        if (ascii_char != 0) {
+            char s[2];
+            s[0] = ascii_char;
+            s[1] = '\0';
+
+            print(s, VGA_COLOR_INFO);
+
+            if(ascii_char == '/') bleh();
+            if(ascii_char == '.') blehh();
+        }
+    }
+
+    outb(0x20, 0x20); 
 }

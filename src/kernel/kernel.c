@@ -34,8 +34,8 @@ void kernel_main() {
     gdt_install();                 // 2. Load a fresh, C-managed GDT
     set_IDT_table();               // 3. Setup and 'lidt' your IDT
     
-    clear_screen();
-    print(0, 0, "System Core Ready", VGA_COLOR_SUCCESS);
+    terminal_system_init();
+    print("System Core Ready", VGA_COLOR_SUCCESS);
 
     remap_pic();                   // 4. Remap PIC while shielded by 'cli'
     

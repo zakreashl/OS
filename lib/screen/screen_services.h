@@ -1,5 +1,7 @@
 #ifndef SCREEN_SERVICES_H
-#define SRCEEN_SERVICES_H
+#define SCREEN_SERVICES_H
+
+#include "../stdlib/stdlib.h"
 
 /* VGA Foreground/Background Colors */
 #define VGA_BLACK           0x0
@@ -31,19 +33,73 @@
 #define VGA_COLOR_DEBUG         0x0D  /* Light magenta on black - debug          */
 #define VGA_COLOR_CRITICAL      0xCF  /* White on light red     - critical       */
 
+
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
 
+#define TERMINAL_HEIGHT 1000
+
 #define ERROR_BUFF_SIZE 2048
 
-extern volatile char *vga;
+
+typedef enum {
+    CURSOR_BLOCK     = 0x000F,  // Full block shape
+    CURSOR_UNDERLINE = 0x0E0F,  // Standard underline
+    CURSOR_HALF      = 0x070F,  // Bottom half block
+    CURSOR_DISABLED  = 0x2000   // Turns the cursor completely off
+} CursorType;
+
+typedef struct {
+    char ch;
+    uint8_t color;
+} terminal_cell;
+
+typedef struct {
+    terminal_cell cells[TERMINAL_HEIGHT * SCREEN_WIDTH];
+
+    int cursor_x;
+    int cursor_y;
+
+    CursorType cursor_type;
+
+    terminal_cell* terminal_start;
+    terminal_cell* terminal_end;
+} terminal_t;
+
+
+extern volatile uint16_t *vga;
 
 extern char error_buffer[];
 
+extern terminal_t* displayed_terminal;
+
+extern terminal_t shell_terminal;
+extern terminal_t error_terminal;
+
+
+// Printing and stuff
+
 void clear_screen();
-
-void print(int x, int y, const char* s, int color);
-
+void print(const char* s, int color);
 void add_error(const char* s);
+
+
+// Terminal functions
+
+void terminal_system_init();
+void terminal_init(terminal_t* terminal);
+void set_displayed_terminal(terminal_t* terminal);
+void display_terminal();
+
+
+// Cursor functions
+
+void set_cursor_location(terminal_t* terminal, int x, int y);
+void move_cursor_forward(terminal_t* terminal, int times);
+void display_cursor();
+void change_cursor(terminal_t* terminal, CursorType type);
+
+void bleh();
+void blehh();
 
 #endif

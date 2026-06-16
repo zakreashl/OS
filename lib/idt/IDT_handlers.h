@@ -16,6 +16,21 @@ typedef struct {
     uint32_t base;
 } __attribute__((packed)) idt_ptr;
 
+// Whenever we get an exception the we can get all the CPU's registers which contains error codes which help with debugging a lot
+typedef struct registers {
+    uint32_t gs, fs, es, ds;
+
+    uint32_t edi, esi, ebp, esp;
+    uint32_t ebx, edx, ecx, eax;
+
+    uint32_t int_no;
+    uint32_t err_code;
+
+    uint32_t eip;
+    uint32_t cs;
+    uint32_t eflags;
+} __attribute__((packed)) registers_t;
+
 // __attribute__((packed)) so gcc doesn't add any padding
 
 extern idt_entry idts[];
