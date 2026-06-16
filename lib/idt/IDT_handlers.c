@@ -98,10 +98,10 @@ void H_keyboard() {
             s[0] = ascii_char;
             s[1] = '\0';
 
-            print(s, VGA_COLOR_INFO);
-
-            if(ascii_char == '/') bleh();
             if(ascii_char == '.') blehh();
+            else if(ascii_char == '/') bleh();
+            else print(s, VGA_COLOR_INFO);
+
         }
     }
 
