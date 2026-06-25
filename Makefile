@@ -1,8 +1,7 @@
 build:
 	mkdir -p bin
 
-	nasm -f bin src/boot/stage1.s -o bin/stage1.bin
-	nasm -f bin src/boot/stage2.s -o bin/stage2.bin
+	nasm -f bin src/boot/bootloader.s -o bin/bootloader.bin
 	nasm -f elf src/boot/kernel_entry.s -g -o bin/kernel_entry.o
 	nasm -f elf lib/idt/IDT_handler_stubs.s -g -o bin/IDT_handler_stub.o
 
@@ -20,7 +19,7 @@ build:
 
 	i686-elf-objcopy -O binary bin/kernel.elf bin/kernel.bin
 
-	cat bin/stage1.bin bin/stage2.bin bin/kernel.bin > bin/os.img
+	cat bin/bootloader.bin bin/kernel.bin > bin/os.img
 	truncate -s 1048576 bin/os.img
 
 all: build

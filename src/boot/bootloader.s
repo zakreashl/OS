@@ -1,26 +1,34 @@
 [bits 16]
-[org 0x8000]
+[org 0x7c00]
+jmp 0x0000:start
+
+start:
+    cli ; Disable interrupts
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov sp, 0x7C00
+    sti ; Enable interrupts
+
+    jmp load_kernel
 
 load_kernel:
     mov ax, 0x1000
     mov es, ax          ; ES = 0x1000
     xor bx, bx          ; BX = 0, so ES:BX = 0x10000
 
-    mov ah, 0x02
     mov al, 8           ; 8 sectors for the kernel
-    mov ch, 0
-    mov cl, 3           ; kernel starts at sector 3
-    mov dh, 0
-    mov dl, 0x80
+    mov ch, 0           ; cylinder 0
+    mov cl, 2           ; kernel starts at sector 2
+    mov dh, 0           ; head 0
+    mov dl, 0x80        ; which hard drive to access 
+    mov ah, 0x02
     int 0x13
 
     jc disk_error
 
     jmp enable_A20
-
-disk_error:
-    hlt
-    jmp disk_error
 
 enable_A20:
     in al, 0x92
@@ -103,4 +111,11 @@ pm_entry:
 
     jmp 0x10000         ; jump to kernel
 
-times 512 - ($ - $$) db 0
+
+
+disk_error:
+    hlt
+    jmp disk_error
+
+times 510 - ($ - $$) db 0
+dw 0xAA55
