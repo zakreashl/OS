@@ -55,14 +55,15 @@ typedef struct {
 } terminal_cell;
 
 typedef struct {
-    terminal_cell cells[TERMINAL_HEIGHT * SCREEN_WIDTH];
+    terminal_cell cells[TERMINAL_HEIGHT * SCREEN_WIDTH]; // All the chars in this terminal
 
-    int cursor_x;
+    int cursor_x; // x and y position of the cursor (used to tell vga where to display the terminal)
     int cursor_y;
+    int cursor_index; // the index where the cursor is actually on
 
     CursorType cursor_type;
 
-    terminal_cell* terminal_start;
+    terminal_cell* terminal_start; // the window of the terminal that is actually being displayed
     terminal_cell* terminal_end;
 } terminal_t;
 
@@ -98,8 +99,5 @@ void set_cursor_location(terminal_t* terminal, int x, int y);
 void move_cursor_forward(terminal_t* terminal, int times);
 void display_cursor();
 void change_cursor(terminal_t* terminal, CursorType type);
-
-void bleh();
-void blehh();
 
 #endif

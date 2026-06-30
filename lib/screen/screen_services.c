@@ -31,26 +31,35 @@ void print_to_terminal(terminal_t* terminal, const char* s, int color) {
     int len = strlen(s);
 
     for(int i = 0; i < len; i++) {
-        terminal->terminal_end->ch = s[i];
-        terminal->terminal_end->color = color;
-        terminal->terminal_end++;
+        int index = terminal->cursor_y * SCREEN_WIDTH + terminal->cursor_x;
+        terminal->cells[index].ch = s[i];
+        terminal->cells[index].color = color;
+        move_cursor_forward(terminal, 1);
     }
 
-    move_cursor_forward(terminal, len);
     set_cursor_location(terminal, terminal->cursor_x, terminal->cursor_y);
     change_cursor(terminal, CURSOR_BLOCK);
+    display_terminal();
+    display_cursor();
 }
 
 void print(const char* s, int color) {
     int len = strlen(s);
 
     for(int i = 0; i < len; i++) {
-        displayed_terminal->terminal_end->ch = s[i];
-        displayed_terminal->terminal_end->color = color;
-        displayed_terminal->terminal_end++;
+        displayed_terminal->cells[displayed_terminal->cursor_index].ch = s[i];
+        displayed_terminal->cells[displayed_terminal->cursor_index].color = color;
+
+        // check if the cursor is off the screen
+        if(displayed_terminal->terminal_end - displayed_terminal->terminal_start < displayed_terminal->cursor_index) {
+            // if so shift the terminal window so it can show the last part of the terminal
+            displayed_terminal->terminal_end++;
+            displayed_terminal->terminal_start++;
+        }
+        
+        move_cursor_forward(displayed_terminal, 1);
     }
 
-    move_cursor_forward(displayed_terminal, len);
     set_cursor_location(displayed_terminal, displayed_terminal->cursor_x, displayed_terminal->cursor_y);
     change_cursor(displayed_terminal, CURSOR_BLOCK);
     display_terminal();
@@ -77,17 +86,17 @@ void terminal_system_init() {
 void terminal_init(terminal_t* terminal) {
     terminal->cursor_x = 0;
     terminal->cursor_y = 0;
+    terminal->cursor_index = 0;
     terminal->cursor_type = CURSOR_UNDERLINE;
-
+    
     for(int i = 0; i < TERMINAL_HEIGHT * SCREEN_WIDTH; i++) {
         terminal->cells[i].ch = ' ';
         terminal->cells[i].color = VGA_COLOR_DEFAULT;
     }
 
-    terminal->terminal_end   = &terminal->cells[0];
     terminal->terminal_start = &terminal->cells[0];
+    terminal->terminal_end   = &terminal->cells[SCREEN_HEIGHT * SCREEN_WIDTH];
 
-    
     change_cursor(terminal, CURSOR_BLOCK);
     set_cursor_location(terminal, 0, 0);
 }
@@ -98,7 +107,7 @@ void set_displayed_terminal(terminal_t* terminal) {
 
 void display_terminal() {
     for(int i = 0; i < SCREEN_HEIGHT * SCREEN_WIDTH; i++) {
-        vga[i] = vga_entry(displayed_terminal->cells[i]);
+        vga[i] = vga_entry(displayed_terminal->terminal_start[i]);
     }
 }
 
@@ -144,20 +153,10 @@ void move_cursor_forward(terminal_t* terminal, int times) {
             terminal->cursor_x -= SCREEN_WIDTH;
         }
     }
+
+    terminal->cursor_index += times;
 }
 
 void change_cursor(terminal_t* terminal, CursorType type) {
     terminal->cursor_type = type;
-}
-
-void bleh() {
-    set_displayed_terminal(&error_terminal);
-    display_terminal();
-    display_cursor();
-}
-
-void blehh() {
-    set_displayed_terminal(&shell_terminal);
-    display_terminal();
-    display_cursor();
 }

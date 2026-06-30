@@ -29,20 +29,18 @@ void set_IDT_table() {
 }
 
 void kernel_main() {
-    __asm__ volatile("cli");       // 1. Kill interrupts immediately
+    __asm__ volatile("cli");
     
-    gdt_install();                 // 2. Load a fresh, C-managed GDT
-    set_IDT_table();               // 3. Setup and 'lidt' your IDT
+    gdt_install();
+    set_IDT_table();
     
     terminal_system_init();
-    print("System Core Ready", VGA_COLOR_SUCCESS);
+    for(int i = 0; i < 110; i++) {
+        print("System Core Ready", VGA_COLOR_SUCCESS);
+    }
 
-    remap_pic();                   // 4. Remap PIC while shielded by 'cli'
-    
-    // Mask EVERYTHING except the keyboard (0xFD = 11111101)
-    outb(0x21, 0xFD);
-    outb(0xA1, 0xFF);
+    remap_pic();
 
-    __asm__ volatile("sti");       // 5. Finally, open the gates
+    __asm__ volatile("sti");
     while(1) __asm__ volatile("hlt");
 }
