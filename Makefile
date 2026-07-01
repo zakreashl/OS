@@ -14,8 +14,9 @@ build:
 	i686-elf-gcc -ffreestanding -fno-builtin -nostdlib -g -O0 -c -o bin/pic.o lib/io/pic.c
 	i686-elf-gcc -ffreestanding -fno-builtin -nostdlib -g -O0 -c -o bin/pmm.o lib/pmm/pmm.c
 	i686-elf-gcc -ffreestanding -fno-builtin -nostdlib -g -O0 -c -o bin/gdt.o lib/gdt/gdt.c
+	i686-elf-gcc -ffreestanding -fno-builtin -nostdlib -g -O0 -c -o bin/timer.o lib/timer/timer.c
 
-	i686-elf-gcc -ffreestanding -fno-builtin -nostdlib -g -T src/linker.ld -o bin/kernel.elf bin/kernel_entry.o bin/kernel.o bin/screen_services.o bin/stdlib.o bin/IDT_handlers.o bin/string.o bin/IDT_handler_stub.o bin/io.o bin/pic.o bin/pmm.o bin/gdt.o
+	i686-elf-gcc -ffreestanding -fno-builtin -nostdlib -g -T src/linker.ld -o bin/kernel.elf bin/kernel_entry.o bin/kernel.o bin/screen_services.o bin/stdlib.o bin/IDT_handlers.o bin/string.o bin/IDT_handler_stub.o bin/io.o bin/pic.o bin/pmm.o bin/gdt.o bin/timer.o
 
 	i686-elf-objcopy -O binary bin/kernel.elf bin/kernel.bin
 

@@ -91,6 +91,7 @@ void terminal_system_init();
 void terminal_init(terminal_t* terminal);
 void set_displayed_terminal(terminal_t* terminal);
 void display_terminal();
+void switch_between_error_shell_terminal();
 
 
 // Cursor functions

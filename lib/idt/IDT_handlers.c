@@ -25,11 +25,6 @@ void idt_set_gate(uint8_t index, uint32_t offset) {
 void fault_handler(registers_t* regs) {
     print("EXCEPTION", VGA_COLOR_ERROR);
 
-    // Later replace these with your actual int/hex print funcs
-    // print_hex(0, 1, regs->int_no, VGA_COLOR_ERROR);
-    // print_hex(0, 2, regs->err_code, VGA_COLOR_ERROR);
-    // print_hex(0, 3, regs->eip, VGA_COLOR_ERROR);
-
     while (1) {
         __asm__ volatile("cli; hlt");
     }
@@ -83,12 +78,14 @@ void H_no_error_code(int regs) {
     }
 }
 
-void H_timer() {
-    outb(0x20, 0x20);
-}
-
 void H_keyboard() {
     uint8_t scancode = inb(0x60);  // read the key
+
+    if(scancode == 42) {
+        switch_between_error_shell_terminal();
+        outb(0x20, 0x20);
+        return;
+    }
 
     if(!(scancode & 0x80)) { // Key release
         char ascii_char = scancode_to_ascii[scancode];
@@ -97,8 +94,8 @@ void H_keyboard() {
             char s[2];
             s[0] = ascii_char;
             s[1] = '\0';
-            
-            print(s, VGA_COLOR_INFO);
+
+            print(s, VGA_YELLOW);
         }
     }
 

@@ -39,8 +39,6 @@ void print_to_terminal(terminal_t* terminal, const char* s, int color) {
 
     set_cursor_location(terminal, terminal->cursor_x, terminal->cursor_y);
     change_cursor(terminal, CURSOR_BLOCK);
-    display_terminal();
-    display_cursor();
 }
 
 void print(const char* s, int color) {
@@ -62,8 +60,6 @@ void print(const char* s, int color) {
 
     set_cursor_location(displayed_terminal, displayed_terminal->cursor_x, displayed_terminal->cursor_y);
     change_cursor(displayed_terminal, CURSOR_BLOCK);
-    display_terminal();
-    display_cursor();
 }
 
 void add_error(const char* s) {
@@ -79,8 +75,6 @@ void terminal_system_init() {
     set_displayed_terminal(&shell_terminal);
 
     clear_screen();
-    display_terminal();
-    display_cursor();
 }
 
 void terminal_init(terminal_t* terminal) {
@@ -108,6 +102,14 @@ void set_displayed_terminal(terminal_t* terminal) {
 void display_terminal() {
     for(int i = 0; i < SCREEN_HEIGHT * SCREEN_WIDTH; i++) {
         vga[i] = vga_entry(displayed_terminal->terminal_start[i]);
+    }
+}
+
+void switch_between_error_shell_terminal() {
+    if(displayed_terminal == &error_terminal) {
+        set_displayed_terminal(&shell_terminal);
+    } else if (displayed_terminal == &shell_terminal) {
+        set_displayed_terminal(&error_terminal);
     }
 }
 

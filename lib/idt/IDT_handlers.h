@@ -54,9 +54,6 @@ extern void H_exception_stub();
 void H_no_error_code(int regs);
 extern void H_no_error_code_stub(int regs);
 
-void H_timer();
-extern void H_timer_stub();
-
 void H_keyboard();
 extern void H_keyboard_stub();
 

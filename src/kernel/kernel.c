@@ -5,6 +5,8 @@
 #include "../../lib/io/io.h"
 #include "../../lib/pmm/pmm.h"
 #include "../../lib/gdt/gdt.h"
+#include "../../lib/timer/timer.h"
+#include "../../lib/timer/timer.h"
 
 void set_IDT_table() {
     for(int i = 0; i < IDT_ENTRIES; i++) {
@@ -33,9 +35,11 @@ void kernel_main() {
     
     gdt_install();
     set_IDT_table();
-    
+
     terminal_system_init();
-    for(int i = 0; i < 110; i++) {
+    add_timer_callback(&display_terminal, 1);
+    add_timer_callback(&display_cursor, 1);
+    for(int i = 0; i < 100; i++) {
         print("System Core Ready", VGA_COLOR_SUCCESS);
     }
 
