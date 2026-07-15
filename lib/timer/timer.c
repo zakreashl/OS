@@ -14,6 +14,8 @@ void H_timer() {
         return;
     }
 
+    print("1", VGA_COLOR_DEBUG);
+
     for(int i = 0; i < callback_count; i++) {
         timer_callback callback = timer_callbacks[i];
         if(system_ticks % callback.interval == 0) {
@@ -30,4 +32,8 @@ extern void add_timer_callback(void (*timer_callback_handler_function), int inte
     end->interval = interval;
     end++;
     callback_count++;
+}
+
+extern void init_pic() {
+    
 }

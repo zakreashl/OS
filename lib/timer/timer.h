@@ -25,4 +25,6 @@ extern void H_timer_stub();
 
 extern void add_timer_callback(void (*timer_callback_handler_function), int interval);
 
+extern void init_pic();
+
 #endif

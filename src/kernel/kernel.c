@@ -39,9 +39,9 @@ void kernel_main() {
     terminal_system_init();
     add_timer_callback(&display_terminal, 1);
     add_timer_callback(&display_cursor, 1);
-    for(int i = 0; i < 100; i++) {
-        print("System Core Ready", VGA_COLOR_SUCCESS);
-    }
+    //for(int i = 0; i < 100; i++) {
+    //    print("System Core Ready", VGA_COLOR_SUCCESS);
+    //}
 
     remap_pic();
 
